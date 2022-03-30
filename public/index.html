@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>WebAssembly Demo</title>
+</head>
+
+<body>
+  <h1>Prime Number Performance</h1>
+  <script src="./prime.js"></script>
+  <script>
+    const primes = 500000
+
+
+    // Check JS
+    let jsStart = performance.now()
+    let jsPrimes = checkPrimes(primes)
+    console.log('JS', "Total Numbers " + jsPrimes, "Time " +  Math.round(performance.now() - jsStart) + " ms")
+
+    // WebAssembly
+    WebAssembly.instantiateStreaming(fetch('/prime.wasm')).then(wasm => {
+      //wasm is loaded successfully
+      // Check C
+      let cStart = performance.now()
+      let cPrimes = wasm.instance.exports.checkPrimes(primes)
+      console.log('C ', "Total Numbers " + cPrimes, "Time " + Math.round(performance.now() - cStart) + " ms")
+    })
+  </script>
+</body>
+
+</html>
